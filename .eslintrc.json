@@ -3,8 +3,21 @@
         "es6": true,
         "node": true
     },
-    "extends": ["eslint:recommended", "plugin:jest/recommended"],
+    "extends": [
+        "eslint:recommended",
+        "plugin:jest/recommended",
+        "plugin:react/recommended"
+    ],
     "parserOptions": {
-        "ecmaVersion": "latest"
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
+    "parser": "@babel/eslint-parser",
+    "rules": {
+        "react/prop-types": "off"
+    },
+    "globals": {
+        "window": true,
+        "document": true
     }
 }
