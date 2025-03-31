@@ -8,6 +8,7 @@
         "@adobe/generator-app-excshell": "^1.0.1",
         "@adobe/react-spectrum": "^3.4.0",
         "@react-spectrum/tree": "^3.0.0-beta.3",
+        "@spectrum-icons/illustrations": "^3.6.18",
         "@spectrum-icons/workflow": "^3.2.0",
         "core-js": "^3.6.4",
         "node-fetch": "^2.6.0",

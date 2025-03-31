@@ -14,9 +14,7 @@ function SideBar() {
                 <li className="SideNav-item">
                     <NavLink
                         className="SideNav-itemLink"
-                        activeClassName="is-selected"
                         aria-current="page"
-                        exact
                         to="/"
                     >
                         Home
@@ -25,7 +23,6 @@ function SideBar() {
                 <li className="SideNav-item">
                     <NavLink
                         className="SideNav-itemLink"
-                        activeClassName="is-selected"
                         aria-current="page"
                         to="/actions"
                     >
@@ -35,7 +32,6 @@ function SideBar() {
                 <li className="SideNav-item">
                     <NavLink
                         className="SideNav-itemLink"
-                        activeClassName="is-selected"
                         aria-current="page"
                         to="/about"
                     >
@@ -51,7 +47,6 @@ function SideBar() {
                         aria-current="page"
                         to="/AppBuilderCourse/Week1"
                         className="SideNav-itemLink"
-                        activeClassName="is-selected"
                     >
                         Week 1
                     </NavLink>
@@ -61,7 +56,6 @@ function SideBar() {
                         aria-current="page"
                         to="/AppBuilderCourse/Week2"
                         className="SideNav-itemLink"
-                        activeClassName="is-selected"
                     >
                         Week 2
                     </NavLink>
@@ -71,7 +65,6 @@ function SideBar() {
                         aria-current="page"
                         to="/AppBuilderCourse/Week3"
                         className="SideNav-itemLink"
-                        activeClassName="is-selected"
                     >
                         Week 3
                     </NavLink>
@@ -81,7 +74,6 @@ function SideBar() {
                         aria-current="page"
                         to="/AppBuilderCourse/Week4"
                         className="SideNav-itemLink"
-                        activeClassName="is-selected"
                     >
                         Week 4
                     </NavLink>
@@ -91,7 +83,6 @@ function SideBar() {
                         aria-current="page"
                         to="/AppBuilderCourse/Week5"
                         className="SideNav-itemLink"
-                        activeClassName="is-selected"
                     >
                         Week 5
                     </NavLink>
@@ -101,7 +92,6 @@ function SideBar() {
                         aria-current="page"
                         to="/AppBuilderCourse/Week6"
                         className="SideNav-itemLink"
-                        activeClassName="is-selected"
                     >
                         Week 6
                     </NavLink>

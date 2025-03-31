@@ -10,6 +10,8 @@ import SideBar from '../components/SideBar'
 import ActionsForm from '../pages/ActionsForm'
 import { Home } from '../pages/Home'
 import { About } from '../pages/About'
+import { Welcome } from '../pages/Welcome'
+import { Tickets } from '../pages/Tickets'
 import { Week1 } from '../pages/AppBuilderCourse/Week1'
 import { Week2 } from '../pages/AppBuilderCourse/Week2'
 import { Week3 } from '../pages/AppBuilderCourse/Week3'
@@ -39,7 +41,7 @@ function App(props) {
                         areas={['sidebar content']}
                         columns={['256px', '3fr']}
                         rows={['auto']}
-                        height="100vh"
+                        minHeight="100vh"
                         gap="size-100"
                     >
                         <View
@@ -62,6 +64,8 @@ function App(props) {
                                     }
                                 />
                                 <Route path="/about" element={<About />} />
+                                <Route path="/welcome" element={<Welcome />} />
+                                <Route path="/tickets" element={<Tickets />} />
                                 <Route
                                     path="/AppBuilderCourse/Week1"
                                     element={<Week1 />}
