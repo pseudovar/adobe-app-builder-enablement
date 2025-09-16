@@ -1,0 +1,138 @@
+# Exercise Development Guidelines
+
+## Language Standards
+All exercise content must use **British English**:
+- Instructions and explanations in British spelling
+- User interface text in British English
+- Error messages and feedback in British English
+- Code comments in British English
+
+## Weekly Exercise Structure
+
+Each exercise should:
+1. **Build incrementally** on previous weeks
+2. **Be completable in 30 minutes**
+3. **Include clear learning objectives**
+4. **Provide troubleshooting guidance**
+5. **Have working code examples**
+
+## Exercise Template
+
+```markdown
+# Week N: [Exercise Title]
+
+## Learning Objectives
+By the end of this exercise, participants will be able to:
+- [ ] Objective 1
+- [ ] Objective 2
+- [ ] Objective 3
+
+## Prerequisites
+- Completed Week N-1 exercise
+- Adobe I/O access configured
+- Local development environment set up
+
+## Exercise Overview
+Brief description of what we're building and why it's important.
+
+## Step-by-Step Instructions
+
+### Step 1: [Action Description]
+**Goal**: What we're trying to achieve
+
+**Implementation**:
+```javascript
+// Code example with comments
+```
+
+**Verification**: How to confirm this step worked
+
+### Step 2: [Next Action]
+**Goal**: Next objective
+
+**Implementation**:
+```jsx
+// React component code
+```
+
+**Verification**: Expected outcome
+
+## Testing Your Implementation
+```bash
+# Commands to test the exercise
+npm test
+npm run e2e
+```
+
+## Troubleshooting
+
+### Common Issue 1
+**Problem**: Description of the issue
+**Solution**: Step-by-step resolution
+**Prevention**: How to avoid this issue
+
+### Common Issue 2
+**Problem**: Another common problem
+**Solution**: How to fix it
+
+## Next Steps
+- What this exercise enables
+- Preview of next week's content
+- Additional resources for deeper learning
+
+## Resources
+- [Adobe App Builder Documentation](https://developer.adobe.com/app-builder/)
+- [React Spectrum Components](https://react-spectrum.adobe.com/)
+- [Adobe I/O Runtime](https://developer.adobe.com/runtime/)
+```
+
+## Exercise Quality Checklist
+
+Before submitting any exercise:
+
+### Learning Quality
+- [ ] Learning objectives clearly stated
+- [ ] Step-by-step instructions provided
+- [ ] Code examples are complete and working
+- [ ] Verification steps included
+- [ ] Troubleshooting section added
+- [ ] Screenshots included for UI changes
+- [ ] Completable within 30 minutes
+
+### Technical Quality
+- [ ] ESLint passes (`npm run lint`)
+- [ ] All tests pass (`npm test`)
+- [ ] E2E tests pass (`npm run e2e`)
+- [ ] No console errors in browser
+- [ ] Proper error handling implemented
+- [ ] Logging added for debugging
+
+### Documentation Quality
+- [ ] README updated if needed
+- [ ] Code comments added for complex logic
+- [ ] JSDoc added for reusable functions
+- [ ] Exercise documentation complete
+
+## AI Assistant Behavior for Exercises
+
+### When Creating Exercises
+1. **Start with clear learning objectives** (in British English)
+2. **Provide working starter code** with British English comments
+3. **Include expected outcomes and verification steps**
+4. **Add troubleshooting for predictable issues**
+5. **Connect to real-world use cases**
+6. **Use British spelling throughout** (realise, optimise, colour, etc.)
+
+### When Helping with Code
+1. **Always consider the educational context** - explain why, not just how
+2. **Provide complete, working examples** that students can copy and run
+3. **Include error handling and logging** in all code samples
+4. **Reference Adobe documentation** when suggesting solutions
+5. **Consider the progressive learning path** - don't introduce concepts too early
+
+### When Debugging Issues
+1. **Check Adobe I/O console configuration** first
+2. **Validate environment setup** (Node.js version, dependencies)
+3. **Review action logs** in Adobe Runtime
+4. **Test components in isolation** before integration
+5. **Provide step-by-step debugging process**

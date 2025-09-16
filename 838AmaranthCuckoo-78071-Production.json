@@ -1,0 +1,33 @@
+{
+    "project": {
+        "id": "4566206088345353538",
+        "name": "838AmaranthCuckoo",
+        "title": "Adobe App Builder Enablement Test",
+        "org": {
+            "id": "78071",
+            "name": "adobe-demo-emea-111",
+            "ims_org_id": "1A7FAA8F597F0FB10A495CB0@AdobeOrg"
+        },
+        "workspace": {
+            "id": "4566206088345374148",
+            "name": "Production",
+            "title": "Production",
+            "action_url": "https://78071-838amaranthcuckoo.adobeioruntime.net",
+            "app_url": "https://78071-838amaranthcuckoo.adobeio-static.net",
+            "details": {
+                "credentials": [],
+                "services": [],
+                "runtime": {
+                    "namespaces": [
+                        {
+                            "name": "78071-838amaranthcuckoo",
+                            "auth": "32f96b41-dcac-413c-ba51-d01d810e74a0:qMeD2SS7mr1xf0a2MW65LHCqKuXa8EJOQ31lBeS8Ldv32Fiqml53sDP107DJf0n1"
+                        }
+                    ]
+                },
+                "events": { "registrations": [] },
+                "mesh": {}
+            }
+        }
+    }
+}

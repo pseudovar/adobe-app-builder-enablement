@@ -1,0 +1,221 @@
+# Adobe App Builder Enablement Project Rules
+
+## Project Overview
+
+This is an Adobe App Builder enablement project designed as a 6-week hands-on course for solution consultants. The project teaches App Builder fundamentals through progressive weekly exercises.
+
+## Core Technologies
+
+-   **Adobe App Builder**: Serverless platform for extending Adobe Experience Cloud
+-   **React**: Frontend UI framework (v16.13.1)
+-   **Adobe React Spectrum**: Adobe's design system components
+-   **Node.js**: Backend runtime (>=18)
+-   **Adobe I/O SDK**: Core Adobe integration library
+-   **Jest**: Testing framework
+
+## Project Structure Rules
+
+### Directory Organization
+
+-   `src/dx-excshell-1/`: Main application code
+    -   `actions/`: Serverless functions (Adobe Runtime)
+    -   `web-src/`: React frontend application
+    -   `test/`: Unit tests
+    -   `e2e/`: End-to-end tests
+-   `docs-internal/`: Internal project documentation
+-   `docs-pub/`: Public-facing documentation and assets
+-   `dist/`: Build artifacts (auto-generated)
+
+### File Naming Conventions
+
+-   React components: PascalCase (e.g., `FlightCard.jsx`)
+-   Actions: kebab-case (e.g., `generic.js`)
+-   Utilities: camelCase (e.g., `utils.js`)
+-   Configuration: kebab-case (e.g., `app.config.yaml`)
+
+## Development Rules
+
+### Code Quality Standards
+
+1. **ESLint**: All code must pass ESLint checks (`npm run lint`)
+2. **Testing**: Maintain test coverage for actions and utilities
+3. **Error Handling**: Always implement proper error boundaries in React components
+4. **Logging**: Use structured logging in actions for debugging
+
+### Adobe App Builder Specific Rules
+
+1. **Actions Structure**:
+
+    - Each action must export a `main` function
+    - Use `@adobe/aio-sdk` for Adobe service integrations
+    - Implement proper parameter validation
+    - Return structured responses with status codes
+
+2. **React Frontend**:
+
+    - Use Adobe React Spectrum components for consistency
+    - Implement proper loading states and error handling
+    - Follow Adobe UX guidelines for user experience
+
+3. **Configuration**:
+    - Keep sensitive data in environment variables
+    - Use `app.config.yaml` for app-level configuration
+    - Maintain separate configs for stage/production environments
+
+### Weekly Exercise Progression Rules
+
+Each week builds upon the previous, following this structure:
+
+**Week 1**: Positioning and setup (no coding)
+**Week 2**: Environment setup and first app deployment
+**Week 3**: Actions and UI integration
+**Week 4**: Deployment and storage implementation
+**Week 5**: Event-driven development
+**Week 6**: API Mesh integration
+
+### Exercise Implementation Rules
+
+1. **Incremental Development**: Each week's exercise should build on previous work
+2. **Self-Contained**: Each exercise should be completable in 30 minutes
+3. **Hands-On Focus**: Prioritize practical implementation over theory
+4. **Error Recovery**: Provide clear debugging steps for common issues
+
+## Technical Constraints
+
+### Dependencies
+
+-   **Node.js**: Minimum version 18
+-   **React**: Locked to v16.13.1 for Adobe compatibility
+-   **Adobe SDK**: Use latest stable versions (@adobe/aio-sdk ^6)
+
+### Performance Guidelines
+
+1. **Bundle Size**: Keep web bundle under 2MB
+2. **Action Timeout**: Actions should complete within 60 seconds
+3. **Memory Usage**: Actions limited to 256MB memory
+
+### Security Rules
+
+1. **Authentication**: Always validate user authentication in actions
+2. **Input Validation**: Sanitize all user inputs
+3. **Secrets Management**: Never commit credentials to repository
+4. **CORS**: Configure appropriate CORS policies for web app
+
+## Documentation Standards
+
+### Code Documentation
+
+-   **Actions**: Document parameters, return values, and error conditions
+-   **Components**: Use JSDoc for React component props
+-   **APIs**: Maintain OpenAPI specs for external integrations
+
+### Exercise Documentation
+
+-   **Clear Objectives**: Each exercise must state learning goals
+-   **Step-by-Step**: Provide detailed implementation steps
+-   **Troubleshooting**: Include common error scenarios and solutions
+-   **Screenshots**: Use visual aids for UI-related exercises
+
+## Git Workflow Rules
+
+### Branch Strategy
+
+-   `main`: Production-ready code
+-   `week-N`: Feature branches for each week's exercises
+-   `hotfix/*`: Critical bug fixes
+
+### Commit Standards
+
+-   Use conventional commits (feat:, fix:, docs:, etc.)
+-   Include exercise week in commit messages when applicable
+-   Keep commits atomic and focused
+
+### File Management
+
+-   **Assets**: Store images in `docs-pub/` directory
+-   **Credentials**: Keep in separate JSON files (gitignored)
+-   **Build Artifacts**: Never commit `dist/` or `node_modules/`
+
+## Testing Requirements
+
+### Unit Testing
+
+-   Test all utility functions
+-   Mock Adobe SDK calls in tests
+-   Maintain >80% code coverage for actions
+
+### Integration Testing
+
+-   Test action-to-UI data flow
+-   Validate Adobe service integrations
+-   Test error handling scenarios
+
+### E2E Testing
+
+-   Test complete user workflows
+-   Validate deployment scenarios
+-   Test cross-browser compatibility
+
+## Deployment Rules
+
+### Environment Management
+
+-   **Development**: Local development with mock services
+-   **Stage**: Adobe I/O staging environment for testing
+-   **Production**: Live environment for demonstrations
+
+### Release Process
+
+1. Complete weekly exercise implementation
+2. Run full test suite
+3. Deploy to staging for validation
+4. Update documentation
+5. Tag release for the week
+
+## Troubleshooting Guidelines
+
+### Common Issues
+
+1. **Authentication Failures**: Check Adobe I/O credentials and permissions
+2. **Build Errors**: Verify Node.js version and dependency compatibility
+3. **Action Timeouts**: Optimize code and check Adobe Runtime limits
+4. **UI Rendering**: Validate React Spectrum component usage
+
+### Debug Process
+
+1. Check local development logs
+2. Validate Adobe I/O console configuration
+3. Test actions independently before UI integration
+4. Use Adobe CLI debugging tools
+
+## Success Metrics
+
+### Learning Objectives
+
+-   Participants can create and deploy App Builder applications
+-   Understanding of Adobe ecosystem integration patterns
+-   Practical experience with serverless development
+-   Knowledge of Adobe React Spectrum design system
+
+### Technical Deliverables
+
+-   Working App Builder application with all weekly features
+-   Comprehensive test suite
+-   Complete documentation set
+-   Deployment-ready configuration
+
+## Maintenance Rules
+
+### Regular Updates
+
+-   Keep Adobe SDK dependencies current
+-   Update React Spectrum components quarterly
+-   Review and update exercise content based on feedback
+-   Maintain compatibility with latest Adobe I/O features
+
+### Quality Assurance
+
+-   Monthly review of exercise completion times
+-   Quarterly assessment of learning outcomes
+-   Annual review of technology stack relevance
+-   Continuous improvement based on participant feedback

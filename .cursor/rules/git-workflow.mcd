@@ -1,0 +1,254 @@
+# Git Workflow & Development Process
+
+## Branch Strategy
+
+### Main Branches
+- **`main`**: Production-ready code
+- **`week-N`**: Feature branches for each week's exercises
+- **`hotfix/*`**: Critical bug fixes
+
+### Branch Naming Conventions
+- `week-N-feature-name`: For exercise development
+- `hotfix/issue-description`: For critical fixes
+- `docs/update-description`: For documentation updates
+
+## Commit Standards
+
+### Conventional Commits
+Use conventional commit format:
+
+```
+feat(week-3): add user generation action
+fix(week-2): resolve authentication issue
+docs(week-4): update storage exercise instructions
+test(week-5): add event handling tests
+chore: update dependencies
+```
+
+### Commit Types
+- **feat**: New feature or exercise
+- **fix**: Bug fix
+- **docs**: Documentation changes
+- **test**: Adding or updating tests
+- **chore**: Maintenance tasks
+- **refactor**: Code refactoring
+- **style**: Code style changes
+
+## Pull Request Process
+
+1. **Create feature branch from `main`**
+   ```bash
+   git checkout main
+   git pull origin main
+   git checkout -b week-N-exercise-name
+   ```
+
+2. **Implement changes with tests**
+   - Write code following project standards
+   - Add unit tests for new functionality
+   - Update documentation as needed
+
+3. **Validate before submitting**
+   ```bash
+   npm run lint
+   npm test
+   npm run e2e
+   ```
+
+4. **Submit PR with clear description**
+   - Include learning objectives
+   - Describe implementation approach
+   - List any breaking changes
+   - Add screenshots for UI changes
+
+5. **Address review feedback**
+   - Make requested changes
+   - Update tests if needed
+   - Respond to reviewer comments
+
+6. **Merge after approval**
+   - Use squash merge for feature branches
+   - Delete feature branch after merge
+
+## File Management
+
+### Assets & Documentation
+- **Images**: Store in `docs-pub/` directory
+- **Internal docs**: Store in `docs-internal/`
+- **Exercise content**: Store in `docs-pub/Week*.md`
+
+### Credentials & Secrets
+- Keep in separate JSON files (gitignored)
+- Use `.env` files for local development
+- Never commit sensitive information
+
+### Build Artifacts
+- Never commit `dist/` or `node_modules/`
+- Add to `.gitignore` if not already present
+- Clean build artifacts before commits
+
+## Development Workflow
+
+### Weekly Exercise Development
+```bash
+# 1. Start new exercise
+git checkout main
+git pull origin main
+git checkout -b week-N-exercise-name
+
+# 2. Develop incrementally
+# - Start with action implementation
+# - Add UI integration
+# - Write tests
+# - Update documentation
+
+# 3. Validate before committing
+npm run lint
+npm test
+npm run e2e
+
+# 4. Commit with clear message
+git add .
+git commit -m "feat(week-N): implement exercise title"
+
+# 5. Push and create PR
+git push origin week-N-exercise-name
+# Create PR via GitHub/GitLab interface
+```
+
+### Daily Development
+```bash
+# Start work session
+git status
+git pull origin main
+
+# Make changes
+# ... edit files ...
+
+# Quick validation
+npm run lint:fix
+npm test
+
+# Commit frequently
+git add .
+git commit -m "feat: implement specific feature"
+```
+
+### Pre-commit Checklist
+- [ ] Code passes ESLint (`npm run lint`)
+- [ ] All tests pass (`npm test`)
+- [ ] E2E tests pass (`npm run e2e`)
+- [ ] No console errors in browser
+- [ ] Documentation updated
+- [ ] Commit message follows conventions
+
+## Release Process
+
+### Weekly Release
+1. **Complete exercise implementation**
+   - All code working and tested
+   - Documentation complete
+   - Troubleshooting guide added
+
+2. **Run full test suite**
+   ```bash
+   npm run lint
+   npm test
+   npm run e2e
+   ```
+
+3. **Deploy to staging for validation**
+   ```bash
+   aio app deploy --stage
+   # Test deployed application
+   ```
+
+4. **Update documentation**
+   - Update README if needed
+   - Add week to course progression
+   - Update any changed APIs
+
+5. **Tag release for the week**
+   ```bash
+   git tag -a week-N -m "Week N: Exercise Title"
+   git push origin week-N
+   ```
+
+### Hotfix Process
+```bash
+# Create hotfix branch from main
+git checkout main
+git checkout -b hotfix/issue-description
+
+# Fix the issue
+# ... make changes ...
+
+# Test thoroughly
+npm run lint
+npm test
+npm run e2e
+
+# Deploy to staging for validation
+aio app deploy --stage
+
+# Commit and merge quickly
+git add .
+git commit -m "fix: resolve critical issue"
+git push origin hotfix/issue-description
+# Create PR and merge immediately
+
+# Deploy to production
+aio app deploy --prod
+```
+
+## Quality Gates
+
+### Before Merge
+- [ ] PR approved by at least one reviewer
+- [ ] All CI checks passing
+- [ ] No merge conflicts
+- [ ] Documentation updated
+- [ ] Tests added for new functionality
+
+### Before Release
+- [ ] Full test suite passing
+- [ ] Deployed and tested in staging
+- [ ] Documentation review complete
+- [ ] Exercise tested with fresh environment
+- [ ] Performance benchmarks met
+
+## Troubleshooting Git Issues
+
+### Common Problems
+
+**Merge Conflicts**
+```bash
+# Pull latest changes
+git pull origin main
+
+# Resolve conflicts in IDE
+# ... edit conflicted files ...
+
+# Mark as resolved
+git add .
+git commit -m "resolve merge conflicts"
+```
+
+**Accidentally Committed Secrets**
+```bash
+# Remove from history (if not pushed)
+git reset --soft HEAD~1
+git reset HEAD .env
+
+# If already pushed, rotate secrets immediately
+# Update .gitignore to prevent future commits
+```
+
+**Need to Squash Commits**
+```bash
+# Interactive rebase
+git rebase -i HEAD~N  # N = number of commits
+
+# In editor, change 'pick' to 'squash' for commits to combine
+# Save and exit, then update commit message
+```

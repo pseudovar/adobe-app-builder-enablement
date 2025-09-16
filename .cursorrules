@@ -1,0 +1,269 @@
+# Cursor AI Assistant Rules for Adobe App Builder Enablement
+
+## Context Awareness
+
+You are working on an Adobe App Builder enablement project - a 6-week hands-on course teaching solution consultants how to build applications on Adobe's serverless platform.
+
+## Key Project Information
+
+-   **Framework**: Adobe App Builder (serverless React + Adobe Runtime)
+-   **UI Library**: Adobe React Spectrum (design system)
+-   **Target Audience**: Solution consultants learning App Builder
+-   **Structure**: Progressive 6-week course with hands-on exercises
+-   **Current Phase**: Project setup and rule establishment
+
+## Code Generation Guidelines
+
+### When Writing Actions (Serverless Functions)
+
+```javascript
+// Always follow this pattern for Adobe Runtime actions
+const { Core } = require('@adobe/aio-sdk')
+
+async function main(params) {
+    const logger = Core.Logger('action-name', {
+        level: params.LOG_LEVEL || 'info',
+    })
+
+    try {
+        // Validate required parameters
+        if (!params.requiredParam) {
+            return {
+                statusCode: 400,
+                body: { error: 'Missing required parameter: requiredParam' },
+            }
+        }
+
+        // Your action logic here
+
+        return {
+            statusCode: 200,
+            body: { result: 'success' },
+        }
+    } catch (error) {
+        logger.error('Action failed:', error)
+        return {
+            statusCode: 500,
+            body: { error: 'Internal server error' },
+        }
+    }
+}
+
+exports.main = main
+```
+
+### When Writing React Components
+
+-   Always use Adobe React Spectrum components
+-   Implement proper loading states and error boundaries
+-   Follow Adobe UX patterns for consistency
+
+```jsx
+import { Provider, defaultTheme, View, Heading } from '@adobe/react-spectrum'
+
+function MyComponent({ data, loading, error }) {
+    if (loading) return <ProgressCircle aria-label="Loading..." />
+    if (error)
+        return (
+            <IllustratedMessage>
+                <NotFound />
+                <Heading>Error occurred</Heading>
+            </IllustratedMessage>
+        )
+
+    return <View padding="size-200">{/* Component content */}</View>
+}
+```
+
+### File Creation Priorities
+
+1. **Prefer editing existing files** over creating new ones
+2. **When creating new files**, follow the established patterns:
+    - Actions go in `src/dx-excshell-1/actions/`
+    - React components in `src/dx-excshell-1/web-src/src/components/`
+    - Tests alongside their source files
+    - Documentation in appropriate `docs-*` folders
+
+## Exercise Development Rules
+
+### Weekly Exercise Structure
+
+Each exercise should:
+
+1. **Build incrementally** on previous weeks
+2. **Be completable in 30 minutes**
+3. **Include clear learning objectives**
+4. **Provide troubleshooting guidance**
+5. **Have working code examples**
+
+### Exercise Implementation Pattern
+
+```markdown
+## Week N: [Exercise Title]
+
+### Learning Objectives
+
+-   Objective 1
+-   Objective 2
+
+### Prerequisites
+
+-   Completed Week N-1
+-   Required tools/access
+
+### Step-by-Step Instructions
+
+1. **Step 1**: Clear action with expected outcome
+2. **Step 2**: Next action with code examples
+3. **Verification**: How to confirm success
+
+### Troubleshooting
+
+-   **Issue**: Common problem
+-   **Solution**: How to resolve
+
+### Next Steps
+
+-   What this enables for future weeks
+```
+
+## Technology-Specific Guidelines
+
+### Adobe I/O Integration
+
+-   Always validate authentication and permissions
+-   Use structured logging for debugging
+-   Implement proper error handling for Adobe service calls
+-   Follow Adobe API rate limiting guidelines
+
+### React Spectrum Usage
+
+-   Import components from `@adobe/react-spectrum`
+-   Use Spectrum design tokens for consistency
+-   Implement responsive layouts with Spectrum grid system
+-   Follow Spectrum accessibility guidelines
+
+### Testing Requirements
+
+-   Unit tests for all utility functions
+-   Integration tests for action-to-UI flows
+-   Mock Adobe SDK calls in tests
+-   E2E tests for critical user paths
+
+## Code Quality Standards
+
+### ESLint Configuration
+
+-   Follow the project's ESLint rules
+-   Fix linting errors before committing
+-   Use `npm run lint:fix` for auto-fixable issues
+
+### Error Handling Patterns
+
+```javascript
+// For Actions
+try {
+    // operation
+} catch (error) {
+    logger.error('Operation failed:', error)
+    return { statusCode: 500, body: { error: 'Operation failed' } }
+}
+
+// For React Components
+;<ErrorBoundary fallback={<ErrorFallback />}>
+    <ComponentContent />
+</ErrorBoundary>
+```
+
+### Logging Standards
+
+```javascript
+// In Actions
+const logger = Core.Logger('action-name', { level: params.LOG_LEVEL || 'info' })
+logger.info('Operation started', { userId: params.userId })
+logger.error('Operation failed', { error: error.message })
+
+// In React (development only)
+console.log('Component rendered:', { props })
+```
+
+## Documentation Standards
+
+### Code Comments
+
+-   Document complex business logic
+-   Explain Adobe-specific integrations
+-   Include parameter descriptions for actions
+-   Add JSDoc for reusable functions
+
+### Exercise Documentation
+
+-   Include screenshots for UI changes
+-   Provide code snippets for key implementations
+-   Document expected outcomes
+-   Include troubleshooting for common issues
+
+## Deployment Considerations
+
+### Environment Configuration
+
+-   Development: Local with mock services
+-   Stage: Adobe I/O staging environment
+-   Production: Live Adobe I/O environment
+
+### Security Guidelines
+
+-   Never commit credentials or API keys
+-   Use environment variables for sensitive data
+-   Validate all user inputs in actions
+-   Implement proper CORS policies
+
+## AI Assistant Behavior
+
+### When Helping with Code
+
+1. **Always consider the educational context** - explain why, not just how
+2. **Provide complete, working examples** that students can copy and run
+3. **Include error handling and logging** in all code samples
+4. **Reference Adobe documentation** when suggesting solutions
+5. **Consider the progressive learning path** - don't introduce concepts too early
+
+### When Debugging Issues
+
+1. **Check Adobe I/O console configuration** first
+2. **Validate environment setup** (Node.js version, dependencies)
+3. **Review action logs** in Adobe Runtime
+4. **Test components in isolation** before integration
+5. **Provide step-by-step debugging process**
+
+### When Creating Exercises
+
+1. **Start with clear learning objectives**
+2. **Provide working starter code**
+3. **Include expected outcomes and verification steps**
+4. **Add troubleshooting for predictable issues**
+5. **Connect to real-world use cases**
+
+## Common Patterns to Recognize
+
+### Adobe App Builder App Structure
+
+```
+src/dx-excshell-1/
+├── actions/           # Serverless functions
+├── web-src/          # React frontend
+├── test/             # Unit tests
+├── e2e/              # End-to-end tests
+└── ext.config.yaml   # Extension configuration
+```
+
+### Typical Development Workflow
+
+1. Develop actions locally
+2. Test actions with Adobe CLI
+3. Build React UI to consume actions
+4. Test integration locally
+5. Deploy to Adobe I/O for staging
+6. Validate in live environment
+
+Remember: This is an educational project. Always prioritize clarity, completeness, and learning outcomes over brevity or advanced optimizations.

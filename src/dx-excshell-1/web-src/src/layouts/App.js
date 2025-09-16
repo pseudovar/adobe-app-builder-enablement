@@ -18,6 +18,8 @@ import { Week3 } from '../pages/AppBuilderCourse/Week3'
 import { Week4 } from '../pages/AppBuilderCourse/Week4'
 import { Week5 } from '../pages/AppBuilderCourse/Week5'
 import { Week6 } from '../pages/AppBuilderCourse/Week6'
+import { Week7 } from '../pages/AppBuilderCourse/Week7'
+import { MeshLogs } from '../pages/MeshLogs'
 
 function App(props) {
     console.log('runtime object:', props.runtime)
@@ -42,13 +44,11 @@ function App(props) {
                         columns={['256px', '3fr']}
                         rows={['auto']}
                         minHeight="100vh"
-                        gap="size-100"
-                    >
+                        gap="size-100">
                         <View
                             gridArea="sidebar"
                             backgroundColor="gray-200"
-                            padding="size-200"
-                        >
+                            padding="size-200">
                             <SideBar></SideBar>
                         </View>
                         <View gridArea="content" padding="size-200">
@@ -89,6 +89,14 @@ function App(props) {
                                 <Route
                                     path="/AppBuilderCourse/Week6"
                                     element={<Week6 />}
+                                />
+                                <Route
+                                    path="/AppBuilderCourse/Week7"
+                                    element={<Week7 />}
+                                />
+                                <Route
+                                    path="/mesh-logs"
+                                    element={<MeshLogs />}
                                 />
                             </Routes>
                         </View>

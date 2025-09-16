@@ -1,0 +1,49 @@
+{
+    "project": {
+        "id": "4566206088345353538",
+        "name": "838AmaranthCuckoo",
+        "title": "Adobe App Builder Enablement Test",
+        "org": {
+            "id": "78071",
+            "name": "adobe-demo-emea-111",
+            "ims_org_id": "1A7FAA8F597F0FB10A495CB0@AdobeOrg"
+        },
+        "workspace": {
+            "id": "4566206088345374149",
+            "name": "Stage",
+            "title": "Stage",
+            "action_url": "https://78071-838amaranthcuckoo-stage.adobeioruntime.net",
+            "app_url": "https://78071-838amaranthcuckoo-stage.adobeio-static.net",
+            "details": {
+                "credentials": [],
+                "services": [],
+                "runtime": {
+                    "namespaces": [
+                        {
+                            "name": "78071-838amaranthcuckoo-stage",
+                            "auth": "008dadbf-d068-4051-9ab9-b76f9cf71b17:DJ18HSl4xI7724no4S0gRcH0a5ot3B24qaqyTLd3KvW5e4oafP8f40qoAdHgQXkd"
+                        }
+                    ]
+                },
+                "events": { "registrations": [] },
+                "mesh": {}
+            },
+            "endpoints": {
+                "dx/excshell/1": {
+                    "view": [
+                        {
+                            "href": "https://78071-838amaranthcuckoo-stage.adobeio-static.net/index.html",
+                            "metadata": {
+                                "services": [],
+                                "profile": {
+                                    "client_id": "firefly-app",
+                                    "scope": "ab.manage,additional_info.job_function,additional_info.projectedProductContext,additional_info.roles,additional_info,AdobeID,adobeio_api,adobeio.appregistry.read,audiencemanager_api,creative_cloud,mps,openid,read_organizations,read_pc.acp,read_pc.dma_tartan,read_pc,session"
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

@@ -20,13 +20,14 @@ import {
 import Function from '@spectrum-icons/workflow/Function'
 
 import allActions from '../config.json'
-import actionWebInvoke from '../lib/utils'
+import { actionWebInvoke } from '../lib/utils'
 
 // remove the deprecated key
 const actions = Object.keys(allActions).reduce((obj, key) => {
     if (key.lastIndexOf('/') > -1) {
         obj[key] = allActions[key]
     }
+    console.log(obj)
     return obj
 }, {})
 
@@ -62,8 +63,7 @@ const ActionsForm = (props) => {
                                 actionResponseError: null,
                                 actionResponse: null,
                             })
-                        }
-                    >
+                        }>
                         {(item) => <Item key={item.name}>{item.name}</Item>}
                     </Picker>
 
@@ -97,8 +97,7 @@ const ActionsForm = (props) => {
                             variant="primary"
                             type="button"
                             onPress={invokeAction.bind(this)}
-                            isDisabled={!state.actionSelected}
-                        >
+                            isDisabled={!state.actionSelected}>
                             <Function aria-label="Invoke" />
                             <Text>Invoke</Text>
                         </ActionButton>
@@ -118,8 +117,7 @@ const ActionsForm = (props) => {
                     padding={'size-100'}
                     marginTop={'size-100'}
                     marginBottom={'size-100'}
-                    borderRadius={'small '}
-                >
+                    borderRadius={'small '}>
                     <StatusLight variant="negative">
                         Failure! See the complete error in your browser console.
                     </StatusLight>
@@ -130,8 +128,7 @@ const ActionsForm = (props) => {
                     padding={'size-100'}
                     marginTop={'size-100'}
                     marginBottom={'size-100'}
-                    borderRadius={'small '}
-                >
+                    borderRadius={'small '}>
                     <StatusLight variant="positive">
                         Success! See the complete response in your browser
                         console.
@@ -203,6 +200,7 @@ const ActionsForm = (props) => {
         }
         let formattedResult = ''
         try {
+            console.log('here is the action name', actionName)
             // invoke backend action
             const actionResponse = await actionWebInvoke(
                 actions[actionName],

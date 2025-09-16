@@ -379,8 +379,7 @@ Once all steps are completed, you're ready for **Step 6: Fetching Data Dynamical
 In [**Week 4**](./Week4.md), we'll:
 
 -   Deploy the app to **Adobe I/O production**.
--   Use **Adobe Storage** to save and retrieve user details.
--   Modify the app to **persist user data** between sessions.
+-   Deploy using **GitHub Actions**
 
 ### Extra Challenge
 

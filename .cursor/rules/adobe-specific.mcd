@@ -1,0 +1,249 @@
+# Adobe-Specific Guidelines
+
+## Adobe I/O Integration
+
+### Authentication & Permissions
+- Always validate authentication and permissions
+- Use environment variables for sensitive data
+- Never commit credentials or API keys
+- Validate all user inputs in actions
+
+### Error Handling
+- Implement proper error handling for Adobe service calls
+- Follow Adobe API rate limiting guidelines
+- Use structured logging for debugging
+- Return appropriate HTTP status codes
+
+### Configuration Management
+- Keep sensitive data in environment variables
+- Use `app.config.yaml` for app-level configuration
+- Maintain separate configs for stage/production environments
+- Implement proper CORS policies
+
+## React Spectrum Usage
+
+### Component Guidelines
+- Import components from `@adobe/react-spectrum`
+- Use Spectrum design tokens for consistency
+- Implement responsive layouts with Spectrum grid system
+- Follow Spectrum accessibility guidelines
+
+### Common Components Pattern
+```jsx
+import {
+    Provider,
+    defaultTheme,
+    View,
+    Heading,
+    Button,
+    Flex,
+    Grid,
+    ProgressCircle,
+    IllustratedMessage,
+    Text
+} from '@adobe/react-spectrum'
+import { NotFound, Error } from '@spectrum-icons/illustrations'
+```
+
+### Loading States
+```jsx
+// Loading state
+<View padding="size-200">
+    <Flex direction="column" alignItems="center" gap="size-200">
+        <ProgressCircle aria-label="Loading..." />
+        <Text>Loading data...</Text>
+    </Flex>
+</View>
+```
+
+### Error States
+```jsx
+// Error state - Note: Use British English in user-facing text
+<IllustratedMessage>
+    <Error />
+    <Heading>Something went wrong</Heading>
+    <Text>Please try again or contact support.</Text>
+</IllustratedMessage>
+
+// Examples with British English
+<IllustratedMessage>
+    <Error />
+    <Heading>Unable to load data</Heading>
+    <Text>We couldn't retrieve your information. Please check your connection and try again.</Text>
+</IllustratedMessage>
+```
+
+## Adobe App Builder App Structure
+
+```
+src/dx-excshell-1/
+├── actions/           # Serverless functions
+│   ├── utils.js      # Shared utilities
+│   └── [action]/     # Individual action folders
+├── web-src/          # React frontend
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── lib/
+│   │   └── index.js
+│   └── index.html
+├── test/             # Unit tests
+├── e2e/              # End-to-end tests
+└── ext.config.yaml   # Extension configuration
+```
+
+## File Creation Priorities
+
+1. **Prefer editing existing files** over creating new ones
+2. **When creating new files**, follow the established patterns:
+   - Actions go in `src/dx-excshell-1/actions/`
+   - React components in `src/dx-excshell-1/web-src/src/components/`
+   - Tests alongside their source files
+   - Documentation in appropriate `docs-*` folders
+
+## Typical Development Workflow
+
+1. **Develop actions locally**
+   ```bash
+   aio app run --local
+   ```
+
+2. **Test actions with Adobe CLI**
+   ```bash
+   aio runtime action invoke dx-excshell-1/action-name --param key value
+   ```
+
+3. **Build React UI to consume actions**
+   ```bash
+   npm run build
+   ```
+
+4. **Test integration locally**
+   ```bash
+   aio app run
+   ```
+
+5. **Deploy to Adobe I/O for staging**
+   ```bash
+   aio app deploy --stage
+   ```
+
+6. **Validate in live environment**
+   ```bash
+   aio app logs
+   ```
+
+## Environment Configuration
+
+### Development
+- Local development with mock services
+- Use `aio app run --local` for offline development
+- Mock Adobe SDK calls in tests
+
+### Stage
+- Adobe I/O staging environment for testing
+- Full Adobe service integration
+- Use for validation before production
+
+### Production
+- Live Adobe I/O environment
+- Full monitoring and logging
+- Production-grade error handling
+
+## Common Adobe CLI Commands
+
+```bash
+# Check authentication status
+aio auth list
+
+# View application logs
+aio app logs
+
+# Debug actions locally
+aio app run --local
+
+# Deploy to specific environment
+aio app deploy --stage
+aio app deploy --prod
+
+# Test specific action
+aio runtime action invoke dx-excshell-1/action-name --param key value
+
+# List deployed actions
+aio runtime action list
+
+# View action details
+aio runtime action get dx-excshell-1/action-name
+```
+
+## Adobe Service Integration Patterns
+
+### Using Adobe SDK
+```javascript
+const { Core, Files, State } = require('@adobe/aio-sdk')
+
+// File storage
+const files = await Files.init()
+await files.write('key', 'data')
+const data = await files.read('key')
+
+// State management
+const state = await State.init()
+await state.put('key', { value: 'data' })
+const value = await state.get('key')
+```
+
+## Security Guidelines
+
+### Input Validation
+```javascript
+// Validate required parameters
+const requiredParams = ['param1', 'param2']
+for (const param of requiredParams) {
+    if (!params[param]) {
+        return {
+            statusCode: 400,
+            body: { error: `Missing required parameter: ${param}` }
+        }
+    }
+}
+
+// Sanitize string inputs
+const sanitizedInput = params.userInput?.toString().trim()
+if (!sanitizedInput || sanitizedInput.length > 1000) {
+    return {
+        statusCode: 400,
+        body: { error: 'Invalid input' }
+    }
+}
+```
+
+### Error Responses
+```javascript
+// Don't expose internal errors - Use British English in user-facing messages
+try {
+    // operation
+} catch (error) {
+    logger.error('Internal error:', error)
+    return {
+        statusCode: 500,
+        body: { error: 'Internal server error' }
+    }
+}
+
+// Examples with British English error messages
+return {
+    statusCode: 400,
+    body: { error: 'Please provide a valid email address' }
+}
+
+return {
+    statusCode: 404,
+    body: { error: 'The requested resource could not be found' }
+}
+
+return {
+    statusCode: 429,
+    body: { error: 'Too many requests. Please try again in a moment' }
+}
+```

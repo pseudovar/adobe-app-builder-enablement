@@ -15,8 +15,7 @@ function SideBar() {
                     <NavLink
                         className="SideNav-itemLink"
                         aria-current="page"
-                        to="/"
-                    >
+                        to="/">
                         Home
                     </NavLink>
                 </li>
@@ -24,8 +23,7 @@ function SideBar() {
                     <NavLink
                         className="SideNav-itemLink"
                         aria-current="page"
-                        to="/actions"
-                    >
+                        to="/actions">
                         Your App Actions
                     </NavLink>
                 </li>
@@ -33,9 +31,16 @@ function SideBar() {
                     <NavLink
                         className="SideNav-itemLink"
                         aria-current="page"
-                        to="/about"
-                    >
+                        to="/about">
                         About App Builder
+                    </NavLink>
+                </li>
+                <li className="SideNav-item">
+                    <NavLink
+                        className="SideNav-itemLink"
+                        aria-current="page"
+                        to="/mesh-logs">
+                        Mesh Logs
                     </NavLink>
                 </li>
             </ul>
@@ -46,8 +51,7 @@ function SideBar() {
                     <NavLink
                         aria-current="page"
                         to="/AppBuilderCourse/Week1"
-                        className="SideNav-itemLink"
-                    >
+                        className="SideNav-itemLink">
                         Week 1
                     </NavLink>
                 </li>
@@ -55,8 +59,7 @@ function SideBar() {
                     <NavLink
                         aria-current="page"
                         to="/AppBuilderCourse/Week2"
-                        className="SideNav-itemLink"
-                    >
+                        className="SideNav-itemLink">
                         Week 2
                     </NavLink>
                 </li>
@@ -64,8 +67,7 @@ function SideBar() {
                     <NavLink
                         aria-current="page"
                         to="/AppBuilderCourse/Week3"
-                        className="SideNav-itemLink"
-                    >
+                        className="SideNav-itemLink">
                         Week 3
                     </NavLink>
                 </li>
@@ -73,8 +75,7 @@ function SideBar() {
                     <NavLink
                         aria-current="page"
                         to="/AppBuilderCourse/Week4"
-                        className="SideNav-itemLink"
-                    >
+                        className="SideNav-itemLink">
                         Week 4
                     </NavLink>
                 </li>
@@ -82,8 +83,7 @@ function SideBar() {
                     <NavLink
                         aria-current="page"
                         to="/AppBuilderCourse/Week5"
-                        className="SideNav-itemLink"
-                    >
+                        className="SideNav-itemLink">
                         Week 5
                     </NavLink>
                 </li>
@@ -91,9 +91,16 @@ function SideBar() {
                     <NavLink
                         aria-current="page"
                         to="/AppBuilderCourse/Week6"
-                        className="SideNav-itemLink"
-                    >
+                        className="SideNav-itemLink">
                         Week 6
+                    </NavLink>
+                </li>
+                <li className="SideNav-item">
+                    <NavLink
+                        aria-current="page"
+                        to="/AppBuilderCourse/Week7"
+                        className="SideNav-itemLink">
+                        Week 7
                     </NavLink>
                 </li>
             </ul>

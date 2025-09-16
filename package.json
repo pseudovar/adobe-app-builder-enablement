@@ -11,6 +11,7 @@
         "@spectrum-icons/illustrations": "^3.6.18",
         "@spectrum-icons/workflow": "^3.2.0",
         "core-js": "^3.6.4",
+        "json2csv": "^6.0.0-alpha.2",
         "node-fetch": "^2.6.0",
         "react": "^16.13.1",
         "react-dom": "^16.13.1",

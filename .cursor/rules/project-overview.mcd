@@ -1,0 +1,52 @@
+# Project Overview & Context
+
+## Project Summary
+This is an **Adobe App Builder enablement project** designed as a 6-week hands-on course for solution consultants. The project teaches App Builder fundamentals through progressive weekly exercises.
+
+## Key Information
+- **Framework**: Adobe App Builder (serverless React + Adobe Runtime)
+- **UI Library**: Adobe React Spectrum (design system)
+- **Target Audience**: Solution consultants learning App Builder
+- **Structure**: Progressive 6-week course with hands-on exercises
+- **Duration**: 30 minutes per session, fully hands-on
+
+## Technology Stack
+- **Adobe App Builder**: Serverless platform for Adobe Experience Cloud extensions
+- **React 16.13.1**: Frontend framework (locked for Adobe compatibility)
+- **Adobe React Spectrum**: Adobe's design system components
+- **Node.js >=18**: Runtime environment
+- **Adobe I/O SDK**: Core integration library (@adobe/aio-sdk ^6)
+- **Jest**: Testing framework
+
+## Project Structure
+```
+├── src/dx-excshell-1/          # Main application
+│   ├── actions/                # Serverless functions (Adobe Runtime)
+│   ├── web-src/               # React frontend application
+│   ├── test/                  # Unit tests
+│   └── e2e/                   # End-to-end tests
+├── docs-internal/             # Internal project documentation
+├── docs-pub/                  # Public documentation & assets
+├── .cursor/rules/             # Cursor rules and guidelines
+├── PRD.md                     # Product Requirements Document
+└── PROJECT_MANAGEMENT.md      # Task tracking and project management
+```
+
+## Learning Progression
+**Week 1**: Introduction & Positioning (no coding)
+**Week 2**: Environment Setup & First App
+**Week 3**: Working with Actions & UI
+**Week 4**: Deploying & Using Storage
+**Week 5**: Working with Adobe I/O Events
+**Week 6**: API Mesh Deep Dive
+
+## Educational Focus
+Remember: This is an educational project. Always prioritise clarity, completeness, and learning outcomes over brevity or advanced optimisations.
+
+## Language Standards
+All documentation, user-facing content, and presentation materials must use **British English**:
+- Spelling: colour, realise, optimise, centre, licence (noun), etc.
+- Grammar: Use British conventions for punctuation and phrasing
+- Code comments: British English for consistency
+- Exercise instructions: British English throughout
+- Error messages: British English in user-facing components

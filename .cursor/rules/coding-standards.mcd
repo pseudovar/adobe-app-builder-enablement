@@ -1,0 +1,159 @@
+# Coding Standards & Best Practices
+
+## Code Quality Standards
+
+### ESLint Configuration
+- Follow the project's ESLint rules
+- Fix linting errors before committing
+- Use `npm run lint:fix` for auto-fixable issues
+
+### File Naming Conventions
+- **React components**: PascalCase (e.g., `FlightCard.jsx`)
+- **Actions**: kebab-case (e.g., `generic.js`)
+- **Utilities**: camelCase (e.g., `utils.js`)
+- **Configuration**: kebab-case (e.g., `app.config.yaml`)
+
+## Adobe Runtime Actions Pattern
+
+Always follow this pattern for Adobe Runtime actions:
+
+```javascript
+const { Core } = require('@adobe/aio-sdk')
+
+async function main(params) {
+    const logger = Core.Logger('action-name', {
+        level: params.LOG_LEVEL || 'info',
+    })
+
+    try {
+        // Validate required parameters
+        if (!params.requiredParam) {
+            return {
+                statusCode: 400,
+                body: { error: 'Missing required parameter: requiredParam' },
+            }
+        }
+
+        // Your action logic here
+
+        return {
+            statusCode: 200,
+            body: { result: 'success' },
+        }
+    } catch (error) {
+        logger.error('Action failed:', error)
+        return {
+            statusCode: 500,
+            body: { error: 'Internal server error' },
+        }
+    }
+}
+
+exports.main = main
+```
+
+## React Component Pattern
+
+Always use Adobe React Spectrum components with proper error handling:
+
+```jsx
+import { Provider, defaultTheme, View, Heading, ProgressCircle, IllustratedMessage } from '@adobe/react-spectrum'
+import { NotFound } from '@spectrum-icons/illustrations'
+
+function MyComponent({ data, loading, error }) {
+    if (loading) return <ProgressCircle aria-label="Loading..." />
+    if (error)
+        return (
+            <IllustratedMessage>
+                <NotFound />
+                <Heading>Error occurred</Heading>
+            </IllustratedMessage>
+        )
+
+    return <View padding="size-200">{/* Component content */}</View>
+}
+```
+
+## Error Handling Patterns
+
+### For Actions
+```javascript
+try {
+    // operation
+} catch (error) {
+    logger.error('Operation failed:', error)
+    return { statusCode: 500, body: { error: 'Operation failed' } }
+}
+```
+
+### For React Components
+```jsx
+<ErrorBoundary fallback={<ErrorFallback />}>
+    <ComponentContent />
+</ErrorBoundary>
+```
+
+## Logging Standards
+
+```javascript
+// In Actions
+const logger = Core.Logger('action-name', { level: params.LOG_LEVEL || 'info' })
+logger.info('Operation started', { userId: params.userId })
+logger.error('Operation failed', { error: error.message })
+
+// In React (development only)
+console.log('Component rendered:', { props })
+```
+
+## Testing Requirements
+
+### Unit Testing
+- Test all utility functions
+- Mock Adobe SDK calls in tests
+- Maintain >80% code coverage for actions
+
+### Integration Testing
+- Test action-to-UI data flow
+- Validate Adobe service integrations
+- Test error handling scenarios
+
+### E2E Testing
+- Test complete user workflows
+- Validate deployment scenarios
+- Test cross-browser compatibility
+
+## Performance Guidelines
+- **Bundle Size**: Keep web bundle under 2MB
+- **Action Timeout**: Actions should complete within 60 seconds
+- **Memory Usage**: Actions limited to 256MB memory
+
+## Language Standards for Code
+- **Code Comments**: Use British English spelling and grammar
+- **Variable Names**: Use camelCase with British spelling where applicable (e.g., `userColour`, `optimisePerformance`)
+- **Error Messages**: Use British English in user-facing messages
+- **Documentation Strings**: JSDoc and inline comments in British English
+
+### Examples
+```javascript
+// British English in comments
+// This function optimises the user's colour preferences
+function optimiseUserColour(userPreferences) {
+    // Analyse the colour scheme for accessibility
+    const analysedColours = analyseColourScheme(userPreferences.colour)
+    
+    if (!analysedColours.isValid) {
+        throw new Error('Invalid colour scheme provided')
+    }
+    
+    return analysedColours
+}
+
+/**
+ * Centralises user authentication logic
+ * @param {Object} credentials - User login credentials
+ * @returns {Promise<Object>} Authentication result
+ */
+async function centraliseAuthentication(credentials) {
+    // Implementation here
+}
+```
