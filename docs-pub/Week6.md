@@ -184,6 +184,8 @@ Check access:
 aio api-mesh:get
 ```
 
+It should say you don't have a mesh yet.
+
 ### 2. Create Your First Mesh Configuration
 
 Create a file called `mesh.json` in your project root:
@@ -214,16 +216,27 @@ aio api-mesh:create mesh.json
 You should see:
 
 ```
-✔ API Mesh created successfully
-Mesh ID: your-mesh-id
-Endpoint: https://your-mesh-endpoint.adobeaemcloud.net/graphql
+******************************************************************************************************
+Your mesh is being provisioned. Wait a few minutes before checking the status of your mesh aaaaaaaa-0000-aaaa-0000-aaaaaaaaaaaa
+To check the status of your mesh, run:
+aio api-mesh:status
+******************************************************************************************************
+Mesh Endpoint: https://edge-sandbox-graph.adobe.io/api/aaaaaaaa-0000-aaaa-0000-aaaaaaaaaaaa/graphql
+```
+
+Give it a couple of minutes and after running `aio api-mesh:status` you should see
+
+```
+******************************************************************************************************
+Mesh provisioned successfully.
+******************************************************************************************************
 ```
 
 ### 4. Test Your Mesh
 
 In Postman/PostBuster, test your new mesh endpoint:
 
-**URL**: `https://your-mesh-endpoint.adobeaemcloud.net/graphql`  
+**URL**: `https://edge-sandbox-graph.adobe.io/api/aaaaaaaa-0000-aaaa-0000-aaaaaaaaaaaa/graphql`
 **Body**:
 
 ```graphql
@@ -285,7 +298,7 @@ Update your `mesh.json` file:
 ### 2. Update Your Mesh
 
 ```sh
-aio api-mesh:update your-mesh-id mesh.json
+aio api-mesh:update mesh.json
 ```
 
 ### 3. Test the Combined Schema - This is the Real Power!
@@ -392,16 +405,16 @@ Update your `mesh.json` to add transforms:
                 "transforms": [
                     {
                         "prefix": {
-                            "value": "geo_"
+                            "mode": "wrap",
+                            "value": "geo_",
+                            "includeRootOperations": true
                         }
                     },
                     {
                         "filterSchema": {
                             "filters": [
-                                "Query.geo_countries",
-                                "Query.geo_country",
-                                "Query.geo_continents",
-                                "Query.geo_languages"
+                                "Query.!geo_language",
+                                "Query.!geo_languages"
                             ]
                         }
                     }
@@ -462,6 +475,10 @@ Your App Builder UI will need to call this mesh endpoint from the browser. Let's
 
 Update your `mesh.json`:
 
+> **Important:**
+> You _will have to update the allowed URLs_ based on your individual environment needs.
+> At the time of writing wildcards are not supported in the domain e.g. https://\*.adobe.com
+
 ```json
 {
     "meshConfig": {
@@ -503,15 +520,39 @@ Update your `mesh.json`:
                 "transforms": [
                     {
                         "prefix": {
-                            "value": "geo_"
+                            "mode": "wrap",
+                            "value": "geo_",
+                            "includeRootOperations": true
+                        }
+                    },
+                    {
+                        "filterSchema": {
+                            "filters": [
+                                "Query.!geo_language",
+                                "Query.!geo_languages"
+                            ]
                         }
                     }
                 ]
             }
         ],
-        "cors": {
-            "origin": "*",
-            "credentials": false
+        "responseConfig": {
+            "CORS": {
+                "maxAge": 60480,
+                "methods": ["GET", "POST", "PUT", "HEAD", "OPTIONS"],
+                "origin": [
+                    "http://localhost:3000",
+                    "http://localhost:3001",
+                    "http://localhost:4321",
+                    "http://localhost:5173",
+                    "https://demo.adobeaemcloud.com",
+                    "https://demo.aem.live",
+                    "https://demo.aem.page",
+                    "https://experience.adobe.com",
+                    "https://developer.adobe.com",
+                    "https://demo.adobeio-static.net"
+                ]
+            }
         }
     }
 }
@@ -520,7 +561,7 @@ Update your `mesh.json`:
 ### 2. Update Your Mesh
 
 ```sh
-aio api-mesh:update your-mesh-id mesh.json
+aio api-mesh:update mesh.json
 ```
 
 > 💬 **Why is CORS important?**
@@ -578,20 +619,41 @@ Update your `mesh.json` to include caching:
                 "transforms": [
                     {
                         "prefix": {
-                            "value": "geo_"
+                            "mode": "wrap",
+                            "value": "geo_",
+                            "includeRootOperations": true
+                        }
+                    },
+                    {
+                        "filterSchema": {
+                            "filters": [
+                                "Query.!geo_language",
+                                "Query.!geo_languages"
+                            ]
                         }
                     }
                 ]
             }
         ],
-        "cors": {
-            "origin": "*",
-            "credentials": false
-        },
-        "cache": {
-            "inmemoryLRU": {
-                "max": 100
-            }
+        "responseConfig": {
+            "CORS": {
+                "maxAge": 60480,
+                "methods": ["GET", "POST", "PUT", "HEAD", "OPTIONS"],
+                "origin": [
+                    "http://localhost:3000",
+                    "http://localhost:3001",
+                    "http://localhost:4321",
+                    "http://localhost:5173",
+                    "https://demo.adobeaemcloud.com",
+                    "https://demo.aem.live",
+                    "https://demo.aem.page",
+                    "https://experience.adobe.com",
+                    "https://developer.adobe.com",
+                    "https://demo.adobeio-static.net"
+                ]
+            },
+            "includeHTTPDetails": true,
+            "cache": true
         }
     }
 }
@@ -605,9 +667,13 @@ aio api-mesh:update your-mesh-id mesh.json
 
 ### 3. Test Caching Performance
 
-Run the same query twice and notice the response time difference:
+API Mesh will respect the caching configuration of your the sources. So if the source is designed to not cache personal information, that will be replicated through API Mesh.
 
-**First request** (slower - hits the source APIs):
+-   Try our query with a `profile` and without.
+-   Run the same query mutliple times and notice the response time difference.
+-   Also check the response headers, to see which are HIT and MISS
+
+**Query**
 
 ```graphql
 query TestCaching($userId: ID!, $countryCode: ID!) {
@@ -633,12 +699,9 @@ query TestCaching($userId: ID!, $countryCode: ID!) {
 }
 ```
 
-**Second request** (faster - served from cache):
-Run the same query and variables again to see the caching in action!
-
 > 💬 **Performance improvement!**
 >
-> The second query should be noticeably faster because it's served from the cache instead of making new API calls.
+> When it's just a country query, and it's already been cached, if should be noticeably faster because it's served from the cache instead of making new API calls.
 
 ---
 
@@ -648,11 +711,11 @@ Now let's add monitoring by logging all API Mesh requests to your App Builder st
 
 ### 1. Create a Hooks File
 
-Create `hooks.js` to log requests to your App Builder action:
+Create `mesh-hooks.js` to log requests to your App Builder action:
 
 ```javascript
 module.exports = {
-    afterAll: async ({ context }) => {
+    beforeAll: async ({ context }) => {
         // Non-blocking logging to App Builder action
         // Replace YOUR_ACTION_URL with your actual log-mesh-request action URL
         fetch('YOUR_ACTION_URL', {
@@ -667,12 +730,18 @@ module.exports = {
                 headers: context.request.headers,
                 query: context.params?.query?.substring(0, 200) || 'No query',
             }),
-        }).catch((err) => console.log('Logging failed:', err))
+        }).catch((err) => {
+            console.log('Logging failed:', err)
+            return {
+                status: 'ERROR',
+                message: 'Unable to log request, ' + err.message,
+            }
+        }) // return fail status
 
         return {
             status: 'SUCCESS',
-            message: 'Request logged',
-        }
+            message: 'Request logged successfully',
+        } // return success status
     },
 }
 ```
@@ -722,26 +791,55 @@ Add the hooks to your `mesh.json`:
                 "transforms": [
                     {
                         "prefix": {
-                            "value": "geo_"
+                            "mode": "wrap",
+                            "value": "geo_",
+                            "includeRootOperations": true
+                        }
+                    },
+                    {
+                        "filterSchema": {
+                            "filters": [
+                                "Query.!geo_language",
+                                "Query.!geo_languages"
+                            ]
                         }
                     }
                 ]
             }
         ],
-        "cors": {
-            "origin": "*",
-            "credentials": false
-        },
-        "cache": {
-            "inmemoryLRU": {
-                "max": 100
-            }
+        "responseConfig": {
+            "CORS": {
+                "maxAge": 60480,
+                "methods": ["GET", "POST", "PUT", "HEAD", "OPTIONS"],
+                "origin": [
+                    "http://localhost:3000",
+                    "http://localhost:3001",
+                    "http://localhost:4321",
+                    "http://localhost:5173",
+                    "https://demo.adobeaemcloud.com",
+                    "https://demo.aem.live",
+                    "https://demo.aem.page",
+                    "https://experience.adobe.com",
+                    "https://developer.adobe.com",
+                    "https://demo.adobeio-static.net"
+                ]
+            },
+            "includeHTTPDetails": true,
+            "cache": true
         },
         "plugins": [
             {
                 "hooks": {
-                    "source": "./hooks.js"
+                    "beforeAll": {
+                        "composer": "./mesh-hooks.js#beforeAll",
+                        "blocking": true
+                    }
                 }
+            }
+        ],
+        "files": [
+            {
+                "path": "./mesh-hooks.js"
             }
         ]
     }
@@ -814,7 +912,7 @@ Navigate to the **Mesh Logs** page in your app to see a real-time view of all AP
 
 > 💬 **Monitoring in action!**
 >
-> You now have complete visibility into how your API Mesh is being used - request counts, popular queries, and usage patterns!
+> This isn't the best usecase for hooks, however you now have complete visibility into how your API Mesh is being used - request counts, popular queries, and usage patterns!
 
 ---
 
@@ -904,33 +1002,27 @@ In [**Week 7**](./Week7.md), we'll explore:
 
 ### Extra Challenge
 
-Enhance your API Mesh setup:
+Take your API Mesh skills to the next level:
 
-1. **Add caching** to improve performance:
+1. **Implement secrets management** for secure API authentication:
 
-    ```json
-    "cache": {
-      "redis": {
-        "host": "your-redis-host",
-        "port": 6379
-      }
-    }
-    ```
+    - Create a `secrets.yaml` file to store sensitive information like API keys and tokens
+    - Use the `--secrets` flag when creating or updating your mesh
+    - Reference secrets in your mesh configuration using `{context.secrets.SECRET_NAME}` syntax
+    - Learn more: [Secrets Management Documentation](https://developer.adobe.com/graphql-mesh-gateway/mesh/advanced/secrets/)
 
-2. **Add rate limiting** to protect your APIs:
+2. **Add a REST API source** using the OpenAPI handler:
 
-    ```json
-    "plugins": [
-      {
-        "rateLimiting": {
-          "max": 100,
-          "windowMs": 900000
-        }
-      }
-    ]
-    ```
+    - Find a public REST API with an OpenAPI specification (like JSONPlaceholder, OpenWeather, or any other public API)
+    - Configure the OpenAPI handler in your mesh configuration
+    - Transform the REST endpoints into GraphQL queries and mutations
+    - Learn more: [OpenAPI Handler Documentation](https://developer.adobe.com/graphql-mesh-gateway/mesh/basic/handlers/openapi/)
 
-3. **Create a mesh that combines e-commerce data** (products, inventory, customers) from multiple sources into a unified shopping API.
+3. **Combine everything** into a comprehensive mesh that includes:
+    - Your existing GraphQL sources
+    - A new REST API source with OpenAPI
+    - Proper secrets management for any API keys
+    - CORS configuration for your specific domains
 
 > 🎉 **Congratulations!**
 >
