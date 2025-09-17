@@ -1,6 +1,10 @@
 const { Core } = require('@adobe/aio-sdk')
-const stateLib = require('@adobe/aio-lib-state')
-const { errorResponse } = require('../utils')
+const {
+    errorResponse,
+    STATE_CONSTANTS,
+    initStateStorage,
+    safeGetState,
+} = require('../utils')
 
 async function main(params) {
     const logger = Core.Logger('get-mesh-logs', {
@@ -10,46 +14,71 @@ async function main(params) {
     try {
         logger.info('Fetching API Mesh logs')
 
-        // Initialize state storage
-        const state = await stateLib.init({ region: 'apac' })
+        // Initialize state storage with region preference
+        const region = params.region || STATE_CONSTANTS.REGIONS.ASIA_PACIFIC
+        const state = await initStateStorage(region, logger)
 
-        // Get recent logs
-        const recentLogsRaw = await state.get('mesh-logs:recent')
-        const recentLogs = Array.isArray(recentLogsRaw) ? recentLogsRaw : []
-        const limit = parseInt(params.limit) || 20
-        const limitedLogs = recentLogs.slice(0, limit)
-
-        // Get today's statistics
+        // Get today's statistics first to get the log IDs
         const today = new Date().toISOString().split('T')[0]
-        const todayStats = (await state.get(`mesh-stats:${today}`)) || {
+        const todayStatsData = await safeGetState(
+            state,
+            `meshstats-${today}`,
+            logger
+        )
+
+        let logs = []
+        let totalAvailable = 0
+
+        if (todayStatsData && Array.isArray(todayStatsData.logIds)) {
+            const limit = parseInt(params.limit) || 20
+            const logIdsToFetch = todayStatsData.logIds.slice(-limit) // Get most recent logs
+            totalAvailable = todayStatsData.logIds.length
+
+            logger.info(`Fetching ${logIdsToFetch.length} individual logs`)
+
+            // Fetch individual logs by ID
+            for (const logId of logIdsToFetch.reverse()) {
+                // Reverse to show newest first
+                const logData = await safeGetState(
+                    state,
+                    `meshlog-${logId}`,
+                    logger
+                )
+                if (logData) {
+                    logs.push(logData)
+                }
+            }
+        }
+
+        // Use the existing todayStatsData for stats
+        const todayStats = todayStatsData || {
             date: today,
             count: 0,
-            requests: [],
+            logIds: [],
         }
 
         // Calculate additional statistics
         const stats = {
             today: todayStats,
-            recentLogsCount: recentLogs.length,
-            requestsInLastHour: recentLogs.filter((log) => {
+            todayLogsCount: logs.length,
+            requestsInLastHour: logs.filter((log) => {
                 const logTime = new Date(log.timestamp)
                 const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000)
                 return logTime > oneHourAgo
             }).length,
-            mostRecentRequest: recentLogs[0]?.timestamp || null,
-            topQueries: getTopQueries(recentLogs.slice(0, 100)),
+            mostRecentRequest: logs[0]?.timestamp || null,
+            topQueries: getTopQueries(logs),
+            region: region,
         }
-
-        logger.info(`Returning ${limitedLogs.length} logs`)
 
         return {
             statusCode: 200,
             body: {
                 success: true,
-                logs: limitedLogs,
+                logs: logs,
                 statistics: stats,
-                requestedLimit: limit,
-                totalAvailable: recentLogs.length,
+                requestedLimit: parseInt(params.limit) || 20,
+                totalAvailable: totalAvailable,
             },
         }
     } catch (error) {

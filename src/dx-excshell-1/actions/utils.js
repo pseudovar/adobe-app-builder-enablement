@@ -139,9 +139,125 @@ function errorResponse(statusCode, message, logger) {
     }
 }
 
+// State storage constants based on Adobe App Builder documentation
+// Note: We're using @adobe/aio-lib-state v5.1.0 which doesn't yet support
+// the async iterator pattern mentioned in the latest docs, so we use traditional methods
+const STATE_CONSTANTS = {
+    // TTL values in seconds
+    TTL: {
+        ONE_HOUR: 60 * 60, // 3600 seconds
+        TEN_HOURS: 10 * 60 * 60, // 36000 seconds
+        TWENTY_FOUR_HOURS: 24 * 60 * 60, // 86400 seconds
+        SEVEN_DAYS: 7 * 24 * 60 * 60, // 604800 seconds
+        MAX_TTL: 365 * 24 * 60 * 60, // 31536000 seconds (1 year)
+    },
+
+    // Regions based on Adobe documentation
+    REGIONS: {
+        AMERICAS: 'amer', // North, Central, and South America (stored in US)
+        EUROPE: 'emea', // Europe, Middle East, Africa (stored in EU)
+        ASIA_PACIFIC: 'apac', // Asia and Pacific (stored in Japan)
+    },
+
+    // Storage limits
+    LIMITS: {
+        MAX_VALUE_SIZE: 1024 * 1024, // 1MB
+        MAX_KEY_SIZE: 1024, // 1KB
+        MAX_KEYS_PER_WORKSPACE: 200000, // 200K keys
+    },
+}
+
+/**
+ * Initialize Adobe State storage with proper error handling
+ * @param {string} region - Region preference (amer, emea, apac)
+ * @param {Object} logger - Logger instance
+ * @returns {Promise<Object>} Initialized state instance
+ */
+async function initStateStorage(
+    region = STATE_CONSTANTS.REGIONS.ASIA_PACIFIC,
+    logger
+) {
+    try {
+        const stateLib = require('@adobe/aio-lib-state')
+        return await stateLib.init({ region })
+    } catch (error) {
+        if (logger) {
+            logger.error(
+                `Failed to initialize state storage in region ${region}:`,
+                error
+            )
+        }
+        throw new Error(`State storage initialization failed: ${error.message}`)
+    }
+}
+
+/**
+ * Safely get value from state with proper error handling and JSON parsing
+ * @param {Object} state - State instance
+ * @param {string} key - State key
+ * @param {Object} logger - Logger instance
+ * @returns {Promise<any>} Parsed value or null if not found
+ */
+async function safeGetState(state, key, logger) {
+    try {
+        const result = await state.get(key)
+        const value = result?.value
+
+        if (!value) {
+            return null
+        }
+
+        // Try to parse as JSON, fallback to original value if parsing fails
+        try {
+            return JSON.parse(value)
+        } catch (parseError) {
+            if (logger) {
+                logger.warn(
+                    `Failed to parse JSON for key ${key}, returning raw value:`,
+                    parseError.message
+                )
+            }
+            return value
+        }
+    } catch (error) {
+        if (logger) {
+            logger.warn(`Failed to get state for key ${key}:`, error.message)
+        }
+        return null
+    }
+}
+
+/**
+ * Safely put value to state with proper error handling and JSON stringification
+ * @param {Object} state - State instance
+ * @param {string} key - State key
+ * @param {any} value - Value to store (will be JSON stringified)
+ * @param {Object} options - Options including TTL
+ * @param {Object} logger - Logger instance
+ * @returns {Promise<boolean>} Success status
+ */
+async function safePutState(state, key, value, options = {}, logger) {
+    try {
+        // Always stringify the value to ensure it's stored as a string
+        const stringValue =
+            typeof value === 'string' ? value : JSON.stringify(value)
+        await state.put(key, stringValue, options)
+        return true
+    } catch (error) {
+        if (logger) {
+            logger.error(`Failed to put state for key ${key}:`, error.message)
+        }
+        return false
+    }
+}
+
 module.exports = {
     errorResponse,
     getBearerToken,
     stringParameters,
     checkMissingRequestInputs,
+    STATE_CONSTANTS,
+    initStateStorage,
+    safeGetState,
+    safePutState,
 }

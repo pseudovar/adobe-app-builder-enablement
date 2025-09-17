@@ -1,6 +1,11 @@
 const { Core } = require('@adobe/aio-sdk')
-const stateLib = require('@adobe/aio-lib-state')
-const { errorResponse } = require('../utils')
+const {
+    errorResponse,
+    STATE_CONSTANTS,
+    initStateStorage,
+    safeGetState,
+    safePutState,
+} = require('../utils')
 
 // Simple function to generate a unique ID without external dependencies
 function generateId() {
@@ -15,8 +20,9 @@ async function main(params) {
     try {
         logger.info('Logging API Mesh request')
 
-        // Initialize state storage
-        const state = await stateLib.init({ region: 'apac' })
+        // Initialize state storage with region preference
+        const region = params.region || STATE_CONSTANTS.REGIONS.ASIA_PACIFIC
+        const state = await initStateStorage(region, logger)
 
         // Create log entry
         const logEntry = {
@@ -31,59 +37,40 @@ async function main(params) {
 
         logger.info('Created log entry:', logEntry.id)
 
-        // Store individual log entry
-        await state.put(`mesh-log:${logEntry.id}`, logEntry, { ttl: 3600 }) // 1 hour TTL
+        // Store individual log entry with proper TTL
+        await safePutState(
+            state,
+            `meshlog-${logEntry.id}`,
+            logEntry,
+            { ttl: STATE_CONSTANTS.TTL.TEN_HOURS },
+            logger
+        )
 
-        // Update recent logs list
-        const recentLogsRaw = await state.get('mesh-logs:recent')
-        const recentLogs = Array.isArray(recentLogsRaw) ? recentLogsRaw : []
-        recentLogs.unshift(logEntry)
-
-        // Keep only the last 50 logs
-        if (recentLogs.length > 50) {
-            recentLogs.length = 50
-        }
-
-        await state.put('mesh-logs:recent', recentLogs, { ttl: 3600 })
+        logger.info('Stored individual log entry with proper TTL')
 
         // Update request count statistics
         const today = new Date().toISOString().split('T')[0] // YYYY-MM-DD
-        const statsKey = `mesh-stats:${today}`
-        let todayStatsRaw = await state.get(statsKey)
+        const statsKey = `meshstats-${today}`
+        const todayStatsData = await safeGetState(state, statsKey, logger)
 
-        // Handle case where state might return string instead of object
+        // Handle stats data with proper defaults
         let todayStats
-        if (!todayStatsRaw) {
-            // No existing stats for today
+        if (!todayStatsData || typeof todayStatsData !== 'object') {
+            // No existing stats for today or invalid data
             todayStats = {
                 date: today,
                 count: 0,
-                requests: [],
-            }
-        } else if (typeof todayStatsRaw === 'string') {
-            // Parse JSON string
-            try {
-                todayStats = JSON.parse(todayStatsRaw)
-            } catch (parseError) {
-                logger.warn(
-                    'Failed to parse existing stats, creating new:',
-                    parseError
-                )
-                todayStats = {
-                    date: today,
-                    count: 0,
-                    requests: [],
-                }
+                logIds: [],
             }
         } else {
-            // Already an object
-            todayStats = todayStatsRaw
+            // Use existing stats
+            todayStats = todayStatsData
         }
 
-        // Ensure requests is an array (defensive programming)
-        if (!Array.isArray(todayStats.requests)) {
-            logger.warn('todayStats.requests is not an array, resetting')
-            todayStats.requests = []
+        // Ensure logIds is an array (defensive programming)
+        if (!Array.isArray(todayStats.logIds)) {
+            logger.warn('todayStats.logIds is not an array, resetting')
+            todayStats.logIds = []
         }
 
         // Ensure count is a number
@@ -92,21 +79,18 @@ async function main(params) {
             todayStats.count = 0
         }
 
-        console.log('todayStats (processed):', todayStats)
+        logger.info('todayStats (processed):', todayStats)
 
         todayStats.count += 1
-        todayStats.requests.push({
-            timestamp: logEntry.timestamp,
-            method: logEntry.method,
-            query: logEntry.query.substring(0, 100),
-        })
+        todayStats.logIds.push(logEntry.id)
 
-        // Keep only last 100 requests per day
-        if (todayStats.requests.length > 100) {
-            todayStats.requests = todayStats.requests.slice(-100)
-        }
-
-        await state.put(statsKey, todayStats, { ttl: 86400 }) // 24 hours
+        await safePutState(
+            state,
+            statsKey,
+            todayStats,
+            { ttl: STATE_CONSTANTS.TTL.TWENTY_FOUR_HOURS },
+            logger
+        )
 
         logger.info('Successfully logged API Mesh request')
 
@@ -116,6 +100,12 @@ async function main(params) {
                 success: true,
                 logId: logEntry.id,
                 message: 'Request logged successfully',
+                region: region,
+                statsForToday: {
+                    date: todayStats.date,
+                    totalCount: todayStats.count,
+                    totalLogIds: todayStats.logIds.length,
+                },
             },
         }
     } catch (error) {
